@@ -3,23 +3,27 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import {FiSettings} from 'react-icons/fi';
 import { TooltipComponent } from '@syncfusion/ej2-react-popups';
 
-import { Navbar, Footer, Sidebar } from './components'
+import { Navbar, Footer, Sidebar, ThemeSettings } from './components'
 import { Calendar, ColorPicker, Customers, Ecommerce, Editor, Employees
 , Kanban, Orders, Area, Bar, ColorMapping, Financial, Line, Pie, Pyramid, Stacked} from './pages';
-import { useStateContext } from './contexts/ContextProvider';
+import { useStateContext } from './contexts/ContextProvider'; 
 import './App.css';
 
 const App = () => {
-  const {activeMenu} = useStateContext();
+  const {activeMenu, themeSettings, currentColor, currentMode, setThemeSettings} = useStateContext();
   return (
-    <div>
+    <div className={currentMode === 'Dark' ? 'dark' : ''}>
       <BrowserRouter>
         <div className="flex relative dark:bg-main-dark-bg">
           <div className="fixed right-4 bottom-4" style={{zIndex: '1000'}}>
             <TooltipComponent content="Settings" position="Top">
-              <button type="button" className="text-3xl p-3 hover:drop-shadow-xl 
-              hover:bg-light-gray text-white" style={{backgroundColor: 'blue',
-              borderRadius: '50%'}}>
+              <button type="button" 
+              className="text-3xl p-3 hover:drop-shadow-xl 
+              hover:bg-light-gray text-white" 
+              style={{backgroundColor: currentColor,
+              borderRadius: '50%'}}
+              onClick={() => setThemeSettings(true)}
+              >
                 <FiSettings />
               </button>
             </TooltipComponent>
@@ -36,13 +40,14 @@ const App = () => {
             </div>
           )}
           <div className={
-            `dark:bg-main-bg bg-main-bg min-h-screen w-full ${activeMenu ? 'md:ml-72' 
+            `dark:bg-main-dark-bg bg-main-bg min-h-screen w-full ${activeMenu ? 'md:ml-72' 
             :'flex-2'}`}
           >
             <div className="fixed md:static bg-main-bg dark:bg-main-dark-bg nav-bar w-full">
               <Navbar/>
             </div>
           <div>
+            {themeSettings && <ThemeSettings />}
             <Routes>
               {/* Dashboard */}
               <Route path ="/" element={<Ecommerce />}/>
